@@ -1,0 +1,23 @@
+fastapi==0.111.0
+starlette==0.37.2
+uvicorn[standard]==0.30.1
+websockets==12.0
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.0
+xgboost==2.0.3
+ta==0.11.0
+requests==2.32.3
+websocket-client==1.8.0
+smartapi-python==1.4.8
+pyotp==2.9.0
+plotly==5.22.0
+joblib==1.4.2
+pydantic==2.7.4
+python-multipart==0.0.9
+pyinstaller==6.8.0
+jinja2==3.1.4
+
+# NOTE: fastapi/starlette are pinned deliberately - newer combinations
+# have been observed to break Jinja2Templates rendering. If you upgrade
+# either package, re-test the "/" route before relying on it.

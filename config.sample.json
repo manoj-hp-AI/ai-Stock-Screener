@@ -1,0 +1,30 @@
+{
+  "mode": "SIMULATE",
+  "_mode_options": "SIMULATE = uses built-in market data simulator (default, no credentials needed). LIVE = connects to Angel One SmartAPI (requires credentials below).",
+
+  "angel_one": {
+    "api_key": "YOUR_API_KEY",
+    "client_id": "YOUR_CLIENT_ID",
+    "password": "YOUR_LOGIN_PIN",
+    "totp_secret": "YOUR_TOTP_SECRET"
+  },
+
+  "screening": {
+    "min_ltp": 30,
+    "max_ltp": 500,
+    "min_bid_qty": 1000000,
+    "min_ask_qty": 1000000
+  },
+
+  "indicators": {
+    "smma_fast": 20,
+    "smma_slow": 120
+  },
+
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000
+  },
+
+  "refresh_interval_seconds": 2
+}

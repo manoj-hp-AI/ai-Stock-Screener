@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Config with real credentials - never commit this
+config.json
+
+# Runtime data
+market_data.db
+*.db
+*.sqlite3
+
+# AI model artifact (regenerate with `python -m ai.train_model`)
+# Comment this out if you want to commit the trained model itself.
+ai/signal_model.joblib
+
+# PyInstaller build output
+build/
+dist/
+*.spec.bak
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log
