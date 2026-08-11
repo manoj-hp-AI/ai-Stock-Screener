@@ -24,8 +24,8 @@ def _load():
 
 
 def _build_feature_row(ind: dict):
-    smma_fast = ind["smma_fast"]
-    smma_slow = ind["smma_slow"]
+    smma_fast = ind["smma_fast"] or 0.0
+    smma_slow = ind["smma_slow"] or 0.0
     gap_pct = (smma_fast - smma_slow) / smma_slow * 100 if smma_slow else 0.0
 
     bid_qty = ind["bid_qty"] or 1
@@ -86,7 +86,8 @@ def predict(indicators: dict) -> dict:
     model, feature_names = bundle["model"], bundle["features"]
 
     feat = _build_feature_row(indicators)
-    X = np.array([[feat[f] for f in feature_names]])
+    import pandas as pd
+    X = pd.DataFrame([[feat[f] for f in feature_names]], columns=feature_names).astype(float)
 
     proba = model.predict_proba(X)[0]
     accept_proba = float(proba[1])

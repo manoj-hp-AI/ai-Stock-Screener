@@ -17,7 +17,8 @@ def recommend(indicators: dict) -> dict:
     model, feature_names = bundle["model"], bundle["features"]
 
     feat = _build_feature_row(indicators)
-    X = np.array([[feat[f] for f in feature_names]])
+    import pandas as pd
+    X = pd.DataFrame([[feat[f] for f in feature_names]], columns=feature_names).astype(float)
     proba = float(model.predict_proba(X)[0][1])
 
     smma_fast = indicators["smma_fast"] or 0
