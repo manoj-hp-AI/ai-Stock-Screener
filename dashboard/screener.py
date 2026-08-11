@@ -46,7 +46,7 @@ def run_screen():
         rows.append(row)
 
         if row["crossover_signal"] is not None:
-            sig = row["crossover_signal"]
+            sig = row["crossover_signal"]  # full object, includes "reason" - internal use only
             db.insert_signal({
                 "symbol": symbol,
                 "signal_type": sig["signal_type"],
@@ -57,7 +57,18 @@ def run_screen():
                 "smma_slow": row["smma_slow"] or 0,
                 "timestamp": time.time(),
             })
-            signals_fired.append(sig)
+            signals_fired.append({
+                "symbol": symbol,
+                "signal_type": sig["signal_type"],
+                "accepted": sig["accepted"],
+                "confidence": sig["confidence"],
+            })
+            # strip the reason before this row goes out over the wire - numbers only in the UI
+            row["crossover_signal"] = {
+                "signal_type": sig["signal_type"],
+                "accepted": sig["accepted"],
+                "confidence": sig["confidence"],
+            }
 
     # Developer Strategy - rule based, independent of the live screen filters.
     # Only symbols that pass every rule are returned ("approved"); each

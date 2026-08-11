@@ -52,15 +52,6 @@ def build_row_analysis(ind: dict) -> dict:
 
     opportunity_rating = round((trade_quality * 0.5 + confluence_score * 0.5) / 20, 1)  # 0-5 stars
 
-    # numbers only on the wire - no reason/explanation text sent to the UI
-    crossover_signal_public = None
-    if crossover_signal:
-        crossover_signal_public = {
-            "signal_type": crossover_signal["signal_type"],
-            "accepted": crossover_signal["accepted"],
-            "confidence": crossover_signal["confidence"],
-        }
-
     return {
         "symbol": ind["symbol"],
         "ltp": ind["ltp"],
@@ -81,7 +72,9 @@ def build_row_analysis(ind: dict) -> dict:
         "risk": rec["risk"],
         "trend": rec["trend"],
 
-        "crossover_signal": crossover_signal_public,  # None, or {signal_type, accepted, confidence}
+        # full object (includes "reason") kept here for internal/DB use only;
+        # dashboard/screener.py strips "reason" before this ever reaches the UI.
+        "crossover_signal": crossover_signal,
 
         "ai_confidence": ai_confidence,
         "trade_quality": trade_quality,
