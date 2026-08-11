@@ -52,10 +52,14 @@ def build_row_analysis(ind: dict) -> dict:
 
     opportunity_rating = round((trade_quality * 0.5 + confluence_score * 0.5) / 20, 1)  # 0-5 stars
 
-    explanation_parts = [rec["reason"]]
+    # numbers only on the wire - no reason/explanation text sent to the UI
+    crossover_signal_public = None
     if crossover_signal:
-        explanation_parts.append(crossover_signal["reason"])
-    explanation = " ".join(explanation_parts)
+        crossover_signal_public = {
+            "signal_type": crossover_signal["signal_type"],
+            "accepted": crossover_signal["accepted"],
+            "confidence": crossover_signal["confidence"],
+        }
 
     return {
         "symbol": ind["symbol"],
@@ -77,7 +81,7 @@ def build_row_analysis(ind: dict) -> dict:
         "risk": rec["risk"],
         "trend": rec["trend"],
 
-        "crossover_signal": crossover_signal,  # None, or {signal_type, accepted, confidence, reason}
+        "crossover_signal": crossover_signal_public,  # None, or {signal_type, accepted, confidence}
 
         "ai_confidence": ai_confidence,
         "trade_quality": trade_quality,
@@ -87,5 +91,4 @@ def build_row_analysis(ind: dict) -> dict:
         "liquidity_score": liquidity_score,
         "opportunity_rating": opportunity_rating,
         "confluence_score": confluence_score,
-        "ai_explanation": explanation,
     }

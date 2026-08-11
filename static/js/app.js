@@ -42,7 +42,7 @@ function updateSummary() {
   el("cardTotal").textContent = allRows.length;
   el("cardBuy").textContent = allRows.filter(r => r.action === "BUY").length;
   el("cardSell").textContent = allRows.filter(r => r.action === "SELL").length;
-  el("cardLongTerm").textContent = longTermRows.filter(r => r.qualified).length;
+  el("cardLongTerm").textContent = longTermRows.length;
 }
 
 // ---------- Filtering / sorting / pagination ----------
@@ -99,24 +99,25 @@ function renderScreenerTable() {
 
   pageRows.forEach(r => {
     const tr = document.createElement("tr");
-    tr.className = "stock-row";
+    const rowCls = r.action === "BUY" ? "row-buy" : r.action === "SELL" ? "row-sell" : "row-avoid";
+    tr.className = `stock-row ${rowCls}`;
     tr.innerHTML = `
       <td class="expand-toggle">▸</td>
       <td><b>${r.symbol}</b></td>
-      <td>₹${r.ltp.toFixed(2)}</td>
+      <td class="mono">₹${r.ltp.toFixed(2)}</td>
       <td>${actionBadge(r.action)}</td>
       <td>
         <div class="progress" style="height:5px;width:70px;display:inline-block;vertical-align:middle;margin-right:6px;">
           <div class="progress-bar bg-info" style="width:${r.ai_confidence}%"></div>
-        </div>${r.ai_confidence.toFixed(1)}%
+        </div><span class="mono">${r.ai_confidence.toFixed(1)}%</span>
       </td>
       <td>${riskBadge(r.risk)}</td>
       <td>${trendLabel(r.trend)}</td>
-      <td>${r.smma_fast ?? "-"}</td>
-      <td>${r.smma_slow ?? "-"}</td>
-      <td>${(r.bid_qty ?? 0).toLocaleString()}</td>
-      <td>${(r.ask_qty ?? 0).toLocaleString()}</td>
-      <td>${(r.traded_qty_60m ?? 0).toLocaleString()}</td>
+      <td class="mono">${r.smma_fast ?? "-"}</td>
+      <td class="mono">${r.smma_slow ?? "-"}</td>
+      <td class="mono">${(r.bid_qty ?? 0).toLocaleString()}</td>
+      <td class="mono">${(r.ask_qty ?? 0).toLocaleString()}</td>
+      <td class="mono">${(r.traded_qty_60m ?? 0).toLocaleString()}</td>
     `;
 
     const detailTr = buildDetailRow(r);
@@ -155,8 +156,6 @@ function buildDetailRow(r) {
   setMetric(6, stars(r.opportunity_rating));
   setMetric(7, r.confluence_score.toFixed(1) + "%", r.confluence_score);
 
-  tr.querySelector(".explanation-text").textContent = r.ai_explanation;
-
   tr.querySelector(".bidp").textContent = "₹" + (r.bid_price ?? "-");
   tr.querySelector(".bidq").textContent = (r.bid_qty ?? 0).toLocaleString();
   tr.querySelector(".askp").textContent = "₹" + (r.ask_price ?? "-");
@@ -192,22 +191,30 @@ function renderLongTermTable() {
   const tbody = el("longTermBody");
   tbody.innerHTML = "";
 
+  if (longTermRows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4">No stocks are currently well positioned for the long term.</td></tr>`;
+    return;
+  }
+
   longTermRows.forEach(r => {
     const tr = document.createElement("tr");
-    const statusBadge = r.qualified
-      ? '<span class="badge badge-buy">QUALIFIED</span>'
-      : '<span class="badge badge-sell">REJECTED</span>';
+    tr.className = "stock-row";
 
     tr.innerHTML = `
       <td><b>${r.symbol}</b></td>
-      <td>${statusBadge}</td>
-      <td>${r.promoter_holding}%</td>
-      <td>${r.fii_holding}%</td>
-      <td>${r.dii_holding}%</td>
-      <td>${r.retail_holding}%</td>
-      <td>${r.retail_q1}% / ${r.retail_q2}% / ${r.retail_q3}%</td>
-      <td>${r.ownership_trend}</td>
-      <td style="white-space:normal;max-width:420px;">${r.reason}</td>
+      <td><span class="badge badge-approved">WELL POSITIONED</span></td>
+      <td class="mono">₹${r.ltp.toFixed(2)}</td>
+      <td>${actionBadge(r.action)}</td>
+      <td>
+        <div class="progress" style="height:5px;width:70px;display:inline-block;vertical-align:middle;margin-right:6px;">
+          <div class="progress-bar bg-info" style="width:${r.ai_confidence}%"></div>
+        </div><span class="mono">${r.ai_confidence.toFixed(1)}%</span>
+      </td>
+      <td>${riskBadge(r.risk)}</td>
+      <td>${trendLabel(r.trend)}</td>
+      <td class="mono">${r.momentum.toFixed(2)}%</td>
+      <td class="mono">₹${r.avg_ltp_20m.toFixed(2)}</td>
+      <td class="mono">${(r.traded_qty_60m ?? 0).toLocaleString()}</td>
     `;
     tbody.appendChild(tr);
   });
