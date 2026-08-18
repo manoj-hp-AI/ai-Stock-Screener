@@ -140,31 +140,8 @@ Swap that function for a loader over your own historical dataset (same
 `FEATURES` list) to retrain on real market history — the rest of the
 pipeline (prediction, confidence scoring, explanations) needs no changes.
 
-## Pushing to GitHub
 
-This repo is already git-initialized with an initial commit. `config.json`
-(your real credentials) and `market_data.db` (runtime data) are git-ignored,
-so it's safe to push as-is.
 
-```bash
-cd stock_screener
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git branch -M main
-git push -u origin main
-```
-
-If you didn't get the repo pre-initialized (e.g. you copied the files
-manually), set it up first:
-
-```bash
-cd stock_screener
-git init
-git add .
-git commit -m "Initial commit: AI stock screener"
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git branch -M main
-git push -u origin main
-```
 
 ## Known limitations (by design, per assignment scope)
 
